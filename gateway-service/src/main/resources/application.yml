@@ -1,0 +1,77 @@
+frontend:
+  path: ${FRONTEND_PATH:/frontend}
+
+access:
+  token: ${ACCESS_TOKEN:1234}
+
+service:
+  user:
+    url: ${USER_SERVICE_URL}
+    bearer: ${USER_SERVICE_BEARER}
+  uri:
+    burnout: ${BURNOUT_SERVICE_URI:http://localhost:8081}
+    fatigue: ${FATIGUE_SERVICE_URI:http://localhost:8082}
+    coping: ${COPING_SERVICE_URI:http://localhost:8083}
+    spb: ${SPB_SERVICE_URI:http://localhost:8084}
+
+server:
+  port: 8080
+
+spring:
+  devtools:
+    livereload:
+      enabled: false
+  cloud:
+    gateway:
+      routes:
+        - id: burnout-service
+          predicates:
+            - Path=/api/burnout/**, /v3/api-docs/burnout
+          filters:
+            - RewritePath=/v3/api-docs/burnout, /v3/api-docs
+          uri: ${service.uri.burnout}
+
+        - id: fatigue-service
+          predicates:
+            - Path=/api/fatigue/**, /v3/api-docs/fatigue
+          filters:
+            - RewritePath=/v3/api-docs/fatigue, /v3/api-docs
+          uri: ${service.uri.fatigue}
+
+        - id: coping-service
+          predicates:
+            - Path=/api/coping/**, /v3/api-docs/coping
+          filters:
+            - RewritePath=/v3/api-docs/coping, /v3/api-docs
+          uri: ${service.uri.coping}
+
+        - id: spb-service
+          predicates:
+            - Path=/api/spb/**, /v3/api-docs/spb
+          filters:
+            - RewritePath=/v3/api-docs/spb, /v3/api-docs
+          uri: ${service.uri.spb}
+
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Burnout Service
+        url: /v3/api-docs/burnout
+
+      - name: Fatigue Service
+        url: /v3/api-docs/fatigue
+
+      - name: Coping Service
+        url: /v3/api-docs/coping
+
+      - name: SPB Service
+        url: /v3/api-docs/spb
+
+      - name: Gateway
+        url: /v3/api-docs
+    path: /docs
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE

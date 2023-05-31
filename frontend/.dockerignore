@@ -1,0 +1,11 @@
+# Files
+.git
+.DS_Store
+
+# Folders
+.yarn
+.idea
+node_modules
+build
+dist
+coverage

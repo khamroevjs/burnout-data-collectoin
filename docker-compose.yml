@@ -1,0 +1,112 @@
+version: "3.9"
+
+services:
+  database:
+    container_name: database
+    build: ./sql-scripts/
+    image: ghcr.io/burnstopper/data-collection-database:1.0
+    command: postgres -c 'max_connections=200'
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - burnoutstopper-data:/var/lib/postgresql/data/
+    networks:
+      - local-net
+  
+  frontend:
+    container_name: frontend
+    build: ./frontend/
+    image: ghcr.io/burnstopper/data-collection-frontend:1.0
+    volumes:
+      - burnoutstopper-frontend:/frontend/
+  
+  gateway-service:
+    container_name: gateway-service
+    build: ./gateway-service/
+    image: ghcr.io/burnstopper/gateway-service:1.0
+    environment:
+      FRONTEND_PATH: ${FRONTEND_PATH:-/frontend/}
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      BURNOUT_SERVICE_URI: ${BURNOUT_SERVICE_URI:-http://burnout-service:8081}
+      FATIGUE_SERVICE_URI: ${FATIGUE_SERVICE_URI:-http://fatigue-service:8082}
+      COPING_SERVICE_URI: ${COPING_SERVICE_URI:-http://coping-service:8083}
+      SPB_SERVICE_URI: ${SPB_SERVICE_URI:-http://spb-service:8084}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_BEARER: ${USER_SERVICE_BEARER}
+    volumes:
+      - burnoutstopper-frontend:/frontend/
+    networks:
+      - local-net
+    ports:
+      - "8080:8080"
+  
+  burnout-service:
+    container_name: burnout-service
+    build: ./burnout-service/
+    image: ghcr.io/burnstopper/burnout-service:1.0
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL_BURNOUT}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_BEARER: ${USER_SERVICE_BEARER}
+    networks:
+      - local-net
+    depends_on:
+      - database
+  
+  fatigue-service:
+    container_name: fatigue-service
+    build: ./fatigue-service/
+    image: ghcr.io/burnstopper/fatigue-service:1.0
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL_FATIGUE}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_BEARER: ${USER_SERVICE_BEARER}
+    networks:
+      - local-net
+    depends_on:
+      - database
+  
+  coping-service:
+    container_name: coping-service
+    build: ./coping-service/
+    image: ghcr.io/burnstopper/coping-service:1.0
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL_COPING}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_BEARER: ${USER_SERVICE_BEARER}
+    networks:
+      - local-net
+    depends_on:
+      - database
+  
+  spb-service:
+    container_name: spb-service
+    build: ./spb-service/
+    image: ghcr.io/burnstopper/spb-service:1.0
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL_SPB}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_SERVICE_BEARER: ${USER_SERVICE_BEARER}
+    networks:
+      - local-net
+    depends_on:
+      - database
+
+volumes:
+  burnoutstopper-data:
+  burnoutstopper-frontend:
+    
+networks:
+  local-net:
+    driver: bridge
