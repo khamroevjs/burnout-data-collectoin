@@ -1,4 +1,31 @@
 # Система сбора и обработки данных психологических опросов. Подсистема сбора данных
+[Ссылка](http://194.67.126.160:8080/) на развернутое веб-приложение.
+
+<div align="center">
+    
+| <img src="https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/3849a32e-11ad-4e62-b2b3-ded96b48e0f7" width="800"/> |
+| :---: |
+| Диаграмма контекста |
+    
+ <br/>
+    
+| <img src="https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/f2fb7c03-786a-452a-be83-089ab85046b8" width="800"/> |
+| :---: |
+| Диаграмма контейнеров |
+
+## Screenshots
+![image](https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/8395587a-5ab1-4c00-ab66-91d72f6b4366)
+    
+    
+![image](https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/f9273ab8-0896-4965-8446-c424b4c64f1b)
+    
+    
+![image](https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/d19da199-7ad0-4242-ba7e-abd5c2055765)
+        
+ 
+![image](https://github.com/jkhamroev/burnout-data-collectoin/assets/55449509/734bf83b-efc7-4ad8-ab43-bdd941e458eb)    
+</div>
+
 
 <pre>
 <code style="color: green">
